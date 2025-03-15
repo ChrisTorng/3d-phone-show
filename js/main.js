@@ -1,6 +1,7 @@
 // 全域變數
 let scene, camera, renderer, controls;
-let phoneModel, ambientLight, directionalLight;
+let phoneModel;
+let lightContainer; // 新增一個光源容器
 let currentPhone = 'phone1';
 
 // 手機資料
@@ -108,24 +109,28 @@ function init() {
 
 // 添加光源
 function addLights() {
-    // 增加環境光的強度
-    ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    // 建立一個光源容器 - 此容器將不受物件旋轉影響
+    lightContainer = new THREE.Group();
+    scene.add(lightContainer);
+    
+    // 增加環境光的強度 - 環境光不需要方向性，直接添加到場景
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
     
-    // 增加主要方向光的強度
-    directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    // 增加主要方向光的強度 - 方向光需要固定相對於相機的位置
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
     directionalLight.position.set(0, 10, 10);
-    scene.add(directionalLight);
+    lightContainer.add(directionalLight);
     
     // 添加第二個方向光，從另一個角度照射
     const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight2.position.set(-10, 5, -10);
-    scene.add(directionalLight2);
+    lightContainer.add(directionalLight2);
     
     // 添加柔和的點光源，從前方照亮模型
     const pointLight = new THREE.PointLight(0xffffff, 0.7);
     pointLight.position.set(0, 0, 10);
-    scene.add(pointLight);
+    lightContainer.add(pointLight);
 }
 
 // 載入手機模型
@@ -271,9 +276,11 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame(animate);
     
-    if (phoneModel) {
-        // 添加輕微自動旋轉效果
-        // phoneModel.rotation.y += 0.002;
+    // 更新光源容器位置，使其跟隨相機
+    if (lightContainer) {
+        // 將光源容器位置重設，讓它相對於世界坐標系固定
+        lightContainer.position.copy(camera.position);
+        lightContainer.quaternion.copy(camera.quaternion);
     }
     
     controls.update();
