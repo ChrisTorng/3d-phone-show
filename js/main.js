@@ -1,5 +1,5 @@
 // 全域變數
-let currentPhone = 'phone1';
+let currentPhone = '';
 let phoneData = {}; // 初始化空的物件，將從 API 載入資料
 
 // 控制變數
@@ -13,29 +13,23 @@ let isAutoRotating = false;
 async function init() {
     try {
         await fetchPhoneData();
+        setupNavigationMenu();
+        
+        // 初始化 3D 場景 (移動到這裡，在載入手機模型之前)
+        const container = document.getElementById('canvas-container');
+        ThreeHandler.initThreeScene(container);
+        
+        // 載入第一支手機
+        const firstPhoneId = Object.keys(phoneData)[0];
+        if (firstPhoneId) {
+            currentPhone = firstPhoneId;
+            await changePhone(firstPhoneId);
+        }
     } catch (error) {
         console.error('無法從 API 載入手機資料:', error);
         showErrorMessage('無法載入手機資料，請重新整理頁面或稍後再試。');
         return;
     }
-    
-    // 初始化 3D 場景
-    const container = document.getElementById('canvas-container');
-    ThreeHandler.initThreeScene(container);
-    
-    // 載入預設手機模型
-    ThreeHandler.loadPhoneModel(phoneData[currentPhone].modelPath, phoneData[currentPhone])
-        .then(() => {
-            startAutoRotation();
-        })
-        .catch(error => {
-            console.error('載入模型時發生錯誤:', error);
-            ThreeHandler.createPlaceholderPhone();
-            startAutoRotation();
-        });
-    
-    // 更新手機規格資訊
-    updatePhoneInfo(currentPhone);
     
     // 添加窗口調整大小事件
     window.addEventListener('resize', () => {
@@ -45,9 +39,6 @@ async function init() {
     
     // 添加控制按鈕事件
     setupControlButtons();
-    
-    // 添加導航菜單事件
-    setupNavigationMenu();
     
     // 初始運行動畫
     animate();
@@ -102,16 +93,34 @@ function setupButtonControl(button, startCallback, stopCallback) {
 
 // 設定導航菜單
 function setupNavigationMenu() {
-    const navLinks = document.querySelectorAll('nav ul li a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function(event) {
+    const phoneMenu = document.getElementById('phone-menu');
+    phoneMenu.innerHTML = ''; // 清除現有內容
+    
+    Object.entries(phoneData).forEach(([phoneId, data], index) => {
+        const li = document.createElement('li');
+        const a = document.createElement('a');
+        a.href = '#';
+        a.setAttribute('data-model', phoneId);
+        a.textContent = data.name;
+        
+        if (index === 0) {
+            a.classList.add('active');
+        }
+        
+        a.addEventListener('click', function(event) {
             event.preventDefault();
             const phoneId = this.getAttribute('data-model');
             changePhone(phoneId);
             
-            navLinks.forEach(navLink => navLink.classList.remove('active'));
+            // 更新選中狀態
+            document.querySelectorAll('#phone-menu a').forEach(navLink => {
+                navLink.classList.remove('active');
+            });
             this.classList.add('active');
         });
+        
+        li.appendChild(a);
+        phoneMenu.appendChild(li);
     });
 }
 
@@ -192,17 +201,27 @@ function showErrorMessage(message) {
 
 // 更改手機模型
 async function changePhone(phoneId) {
-    try {
-        if (!phoneData[phoneId]) {
-            await fetchPhoneById(phoneId);
+    if (!phoneData[phoneId]) {
+        try {
+            phoneData[phoneId] = await fetchPhoneById(phoneId);
+        } catch (error) {
+            console.error(`無法載入手機 ${phoneId} 的資料:`, error);
+            showErrorMessage(`無法載入手機資料，請稍後再試。`);
+            return;
         }
-        
-        currentPhone = phoneId;
-        await ThreeHandler.loadPhoneModel(phoneData[phoneId].modelPath, phoneData[phoneId]);
+    }
+
+    currentPhone = phoneId;
+    const data = phoneData[phoneId];
+
+    try {
+        await ThreeHandler.loadPhoneModel(data.modelPath, data);
         updatePhoneInfo(phoneId);
+        startAutoRotation();
     } catch (error) {
-        console.error(`更改手機模型時發生錯誤: ${error}`);
-        showErrorMessage(`無法載入 ${phoneId} 的資料，請稍後再試。`);
+        console.error(`載入手機模型時發生錯誤: ${error}`);
+        ThreeHandler.createPlaceholderPhone();
+        showErrorMessage(`無法載入手機模型，顯示預設模型。`);
     }
 }
 
