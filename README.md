@@ -17,12 +17,24 @@
 
 ## 技術堆疊
 
+### 前端
 - HTML5
 - CSS3
 - JavaScript
 - Three.js (3D 渲染函式庫)
 - GLTFLoader (用於載入 3D 模型)
 - OrbitControls (用於互動控制)
+
+### 後端
+- Python
+- Flask (Web 框架)
+
+### 測試
+- Jest (JavaScript 測試框架)
+- Pytest (Python 測試框架)
+
+### 部署
+- Vercel
 
 ## 使用方式
 
@@ -37,27 +49,54 @@
 ## 模型資訊
 
 目前支援的手機模型：
-- 旗艦 X1 Pro
-- 輕薄 Y2
-- 超能 Z5
+- iPhone 16 Pro Max
+- Samsung Galaxy S25 Ultra
+- Samsung Galaxy Z Flip 3
 
 ## 檔案結構
 
 ```
 /
-├── index.html        # 主要 HTML 檔案
+├── index.html          # 主要 HTML 檔案
+├── index.py           # Flask 後端應用程式
 ├── css/
-│   └── style.css     # 樣式表
+│   └── style.css      # 樣式表
 ├── js/
-│   └── main.js       # JavaScript 主要程式碼
-└── models/           # 3D 模型檔案
-    ├── CHT baby.glb
-    └── CHT baby color.glb
+│   ├── main.js        # 主要程式碼
+│   ├── three-handler.js # Three.js 相關處理
+│   └── __tests__/     # JavaScript 測試檔案
+├── data/
+│   └── phones.json    # 手機資料配置
+├── models/            # 3D 模型檔案
+│   ├── iphone_16_pro_max.glb
+│   ├── samsung_galaxy_s22_ultra.glb
+│   └── Samsung_Galaxy_Z_Flip_3.glb
+└── tests/             # Python 測試檔案
+```
+
+## 開發設定
+
+### 前端開發
+```bash
+npm install           # 安裝相依套件
+npm test             # 執行測試
+```
+
+### 後端開發
+```bash
+pip install -r requirements.txt  # 安裝相依套件
+python index.py                  # 啟動開發伺服器
+pytest                          # 執行測試
 ```
 
 ## 自訂
 
-若要新增更多手機模型，可編輯 `main.js` 中的 `phoneData` 物件，加入新的模型資訊和規格。
+若要新增更多手機模型，編輯 `data/phones.json` 檔案，加入新的手機資訊和規格。每個手機項目需要包含：
+- 名稱
+- 3D 模型路徑
+- 縮放比例
+- 位置和旋轉設定
+- 詳細規格資訊
 
 ## 授權資訊
 
