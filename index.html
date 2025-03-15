@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 手機展示</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>3D 手機展示</h1>
+        <nav>
+            <ul>
+                <li><a href="#" class="active" data-model="phone1">手機型號 1</a></li>
+                <li><a href="#" data-model="phone2">手機型號 2</a></li>
+                <li><a href="#" data-model="phone3">手機型號 3</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="phone-viewer">
+            <div id="canvas-container"></div>
+            <div id="controls">
+                <button id="rotate-left">向左旋轉</button>
+                <button id="rotate-right">向右旋轉</button>
+                <button id="zoom-in">放大</button>
+                <button id="zoom-out">縮小</button>
+            </div>
+        </div>
+        <div id="phone-info">
+            <h2 id="phone-name">手機型號 1</h2>
+            <div id="phone-specs">
+                <p><strong>螢幕：</strong> <span id="screen-size">6.7 吋 OLED</span></p>
+                <p><strong>處理器：</strong> <span id="processor">高通驍龍 8 Gen 1</span></p>
+                <p><strong>相機：</strong> <span id="camera">48MP + 12MP + 12MP</span></p>
+                <p><strong>電池：</strong> <span id="battery">5000mAh</span></p>
+                <p><strong>儲存空間：</strong> <span id="storage">256GB</span></p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 3D 手機展示網站。保留所有權利。</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
