@@ -1,0 +1,92 @@
+{
+  "scene": 0,
+  "scenes": [
+    {
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "asset": {
+    "version": "2.0",
+    "generator": "https://github.com/mikedh/trimesh"
+  },
+  "accessors": [
+    {
+      "componentType": 5125,
+      "type": "SCALAR",
+      "bufferView": 0,
+      "count": 120000,
+      "max": [
+        20001
+      ],
+      "min": [
+        0
+      ]
+    },
+    {
+      "componentType": 5126,
+      "type": "VEC3",
+      "byteOffset": 0,
+      "bufferView": 1,
+      "count": 20002,
+      "max": [
+        0.46604347229003906,
+        0.9900235533714294,
+        0.47250571846961975
+      ],
+      "min": [
+        -0.4743771255016327,
+        -0.9982041120529175,
+        -0.4791806638240814
+      ]
+    }
+  ],
+  "meshes": [
+    {
+      "name": "tmpx9d2st16.ply",
+      "extras": {
+        "processed": true
+      },
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 1
+          },
+          "indices": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "name": "world",
+      "children": [
+        1
+      ]
+    },
+    {
+      "name": "tmpx9d2st16.ply",
+      "mesh": 0
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "CHT baby_data.bin",
+      "byteLength": 720024
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteOffset": 0,
+      "byteLength": 480000
+    },
+    {
+      "buffer": 0,
+      "byteOffset": 480000,
+      "byteLength": 240024
+    }
+  ]
+}

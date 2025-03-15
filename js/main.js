@@ -7,7 +7,7 @@ let currentPhone = 'phone1';
 const phoneData = {
     phone1: {
         name: '旗艦 X1 Pro',
-        modelPath: 'models/phone1.glb',
+        modelPath: 'models/CHT baby.glb',
         scale: 1.5,
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
@@ -21,7 +21,7 @@ const phoneData = {
     },
     phone2: {
         name: '輕薄 Y2',
-        modelPath: 'models/phone2.glb',
+        modelPath: 'models/CHT baby color.glb',
         scale: 1.5,
         position: { x: 0, y: 0, z: 0 },
         rotation: { x: 0, y: 0, z: 0 },
@@ -128,11 +128,10 @@ function loadPhoneModel(modelPath) {
     
     // 由於模型可能不存在，我們在這裡使用替代物件
     // 實際使用時，應當替換成正確的模型路徑
-    createPlaceholderPhone();
+    // createPlaceholderPhone();
     
     // 下面的程式碼展示如何載入真實 3D 模型
     // 請在有實際模型檔案時使用此程式碼
-    /*
     loader.load(
         modelPath,
         function (gltf) {
@@ -151,7 +150,6 @@ function loadPhoneModel(modelPath) {
             createPlaceholderPhone();
         }
     );
-    */
 }
 
 // 建立替代手機模型
