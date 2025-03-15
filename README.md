@@ -4,7 +4,7 @@
 
 ## 線上展示
 
-您可以在這裡查看線上展示：[3D 手機展示平台](https://christorng.github.io/3d-phone-show/)
+您可以在這裡查看線上展示：[3D 手機展示平台](https://3d-phone-show.vercel.app/)
 
 ## 功能
 
