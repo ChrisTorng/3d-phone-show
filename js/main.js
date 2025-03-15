@@ -253,9 +253,17 @@ function animate() {
     }
     
     if (isZoomingIn) {
+        // 在縮放時停止自動旋轉
+        if (isAutoRotating) {
+            stopAutoRotation();
+        }
         ThreeHandler.zoomCamera(-1);
     }
     if (isZoomingOut) {
+        // 在縮放時停止自動旋轉
+        if (isAutoRotating) {
+            stopAutoRotation();
+        }
         ThreeHandler.zoomCamera(1);
     }
     

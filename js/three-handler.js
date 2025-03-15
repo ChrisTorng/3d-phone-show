@@ -121,14 +121,16 @@ function createPlaceholderPhone(phoneColor = 0x000000) {
 
 // 模型控制函式
 function rotateModel(direction) {
+    stopAutoRotation();
     if (phoneModel) {
         phoneModel.rotation.y += rotationSpeed * direction;
     }
 }
 
 function zoomCamera(direction) {
+    // 移除對 stopAutoRotation 的呼叫，因為這個函式在此檔案中不存在
     const newZ = camera.position.z + (zoomSpeed * direction);
-    if (newZ > 1 && newZ < 10) {
+    if (newZ > 1 && newZ < 20) {
         camera.position.z = newZ;
     }
 }
