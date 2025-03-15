@@ -27,6 +27,13 @@ function initThreeScene(container) {
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     
+    // 監聽拖曳事件
+    controls.addEventListener('start', () => {
+        if (window.ThreeHandler && typeof window.ThreeHandler.onDragStart === 'function') {
+            window.ThreeHandler.onDragStart();
+        }
+    });
+    
     addLights();
     
     return { scene, camera, renderer, controls };
@@ -144,7 +151,6 @@ function createPlaceholderPhone(phoneColor = 0x000000) {
 
 // 模型控制函式
 function rotateModel(direction) {
-    stopAutoRotation();
     if (phoneModel) {
         phoneModel.rotation.y += rotationSpeed * direction;
     }
@@ -184,8 +190,8 @@ function updateScene() {
     renderer.render(scene, camera);
 }
 
-// 將所有函式加入全域範圍
-window.ThreeHandler = {
+// 匯出所需的函式
+export {
     initThreeScene,
     loadPhoneModel,
     createPlaceholderPhone,
@@ -194,5 +200,5 @@ window.ThreeHandler = {
     autoRotateModel,
     resizeRenderer,
     updateScene,
-    removeCurrentModel  // 將新函式加入到全域範圍
+    removeCurrentModel
 };

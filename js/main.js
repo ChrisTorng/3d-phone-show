@@ -3,6 +3,18 @@
  * 負責使用者介面控制、資料管理及場景整合
  */
 
+import {
+    initThreeScene,
+    loadPhoneModel,
+    createPlaceholderPhone,
+    rotateModel,
+    zoomCamera,
+    autoRotateModel,
+    resizeRenderer,
+    updateScene,
+    removeCurrentModel
+} from './three-handler.js';
+
 // 全域變數
 let currentPhone = '';
 let phoneData = {}; // 初始化空的物件，將從 API 載入資料
@@ -309,3 +321,21 @@ function animate() {
 
 // 頁面載入完成後執行初始化
 window.addEventListener('DOMContentLoaded', init);
+
+// 建立並暴露 ThreeHandler 物件
+window.ThreeHandler = {
+    initThreeScene,
+    loadPhoneModel,
+    createPlaceholderPhone,
+    rotateModel,
+    zoomCamera,
+    autoRotateModel,
+    resizeRenderer,
+    updateScene,
+    removeCurrentModel,
+    onDragStart: () => {
+        if (isAutoRotating) {
+            stopAutoRotation();
+        }
+    }
+};

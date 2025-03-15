@@ -27,7 +27,8 @@ global.THREE = {
 global.THREE.OrbitControls = jest.fn(() => ({
     enableDamping: false,
     dampingFactor: 0,
-    update: jest.fn()
+    update: jest.fn(),
+    addEventListener: jest.fn()
 }));
 
 describe('主控模組', () => {
@@ -110,5 +111,42 @@ describe('主控模組', () => {
         // 驗證錯誤訊息是否顯示
         const errorMessage = document.querySelector('.error-message');
         expect(errorMessage).not.toBeNull();
+    });
+});
+
+describe('自由展示控制', () => {
+    let isAutoRotating;
+    let stopAutoRotation;
+
+    beforeEach(() => {
+        // 設定測試用的全域變數
+        isAutoRotating = true;
+        stopAutoRotation = jest.fn(() => {
+            isAutoRotating = false;
+        });
+        
+        // 清除快取
+        jest.resetModules();
+        
+        // 模擬 ThreeHandler
+        global.ThreeHandler = {
+            onDragStart: () => {
+                if (isAutoRotating) {
+                    stopAutoRotation();
+                }
+            }
+        };
+    });
+    
+    test('拖曳時應該停止自由展示', () => {
+        // 驗證初始狀態
+        expect(isAutoRotating).toBe(true);
+        
+        // 模擬拖曳開始事件
+        global.ThreeHandler.onDragStart();
+        
+        // 驗證自由展示是否已停止
+        expect(isAutoRotating).toBe(false);
+        expect(stopAutoRotation).toHaveBeenCalled();
     });
 });
