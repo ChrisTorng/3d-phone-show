@@ -33,7 +33,7 @@ def get_phones():
     phones_data = {
         'phone1': {
             'name': '旗艦 X1 Pro',
-            'modelPath': 'models/CHT baby.glb',
+            'modelPath': 'models/CHT_baby.glb',
             'scale': 1.5,
             'position': {'x': 0, 'y': 0, 'z': 0},
             'rotation': {'x': 0, 'y': 0, 'z': 0},
@@ -47,7 +47,7 @@ def get_phones():
         },
         'phone2': {
             'name': '輕薄 Y2',
-            'modelPath': 'models/CHT baby color.glb',
+            'modelPath': 'models/CHT_baby_color.glb',
             'scale': 1.5,
             'position': {'x': 0, 'y': 0, 'z': 0},
             'rotation': {'x': 0, 'y': 0, 'z': 0},
