@@ -1,11 +1,21 @@
 from flask import Flask, send_from_directory, jsonify
 from werkzeug.security import safe_join
 import os
+import json
 
 app = Flask(__name__)
 
 # 定義靜態資源的根目錄
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
+# 讀取手機資料的函式
+def load_phones_data():
+    try:
+        with open(os.path.join(APP_ROOT, 'data', 'phones.json'), 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except Exception as e:
+        print(f'讀取手機資料錯誤: {str(e)}')
+        return {}
 
 # 首頁路由
 @app.route('/')
@@ -37,102 +47,13 @@ def send_model(path):
 # API 路由：獲取所有手機資料
 @app.route('/api/phones', methods=['GET'])
 def get_phones():
-    # 這裡模擬從資料庫或檔案中讀取手機資料
-    phones_data = {
-        'phone1': {
-            'name': '旗艦 X1 Pro',
-            'modelPath': 'models/CHT_baby.glb',
-            'scale': 1.5,
-            'position': {'x': 0, 'y': 0, 'z': 0},
-            'rotation': {'x': 0, 'y': 0, 'z': 0},
-            'specs': {
-                'screenSize': '6.7 吋 AMOLED',
-                'processor': '高通驍龍 8 Gen 1',
-                'camera': '108MP + 48MP + 12MP',
-                'battery': '5000mAh',
-                'storage': '256GB'
-            }
-        },
-        'phone2': {
-            'name': '輕薄 Y2',
-            'modelPath': 'models/CHT_baby_color.glb',
-            'scale': 1.5,
-            'position': {'x': 0, 'y': 0, 'z': 0},
-            'rotation': {'x': 0, 'y': 0, 'z': 0},
-            'specs': {
-                'screenSize': '6.1 吋 OLED',
-                'processor': '高通驍龍 778G',
-                'camera': '64MP + 12MP',
-                'battery': '4500mAh',
-                'storage': '128GB'
-            }
-        },
-        'phone3': {
-            'name': '超能 Z5',
-            'modelPath': 'models/phone3.glb',
-            'scale': 1.5,
-            'position': {'x': 0, 'y': 0, 'z': 0},
-            'rotation': {'x': 0, 'y': 0, 'z': 0},
-            'specs': {
-                'screenSize': '6.9 吋 Dynamic AMOLED',
-                'processor': 'Apple A16',
-                'camera': '50MP + 50MP + 12MP + 8MP',
-                'battery': '4800mAh',
-                'storage': '512GB'
-            }
-        }
-    }
+    phones_data = load_phones_data()
     return jsonify(phones_data)
 
 # API 路由：獲取特定手機資料
 @app.route('/api/phones/<phone_id>', methods=['GET'])
 def get_phone(phone_id):
-    # 這裡模擬從資料庫或檔案中讀取手機資料
-    phones_data = {
-        'phone1': {
-            'name': '旗艦 X1 Pro',
-            'modelPath': 'models/CHT baby.glb',
-            'scale': 1.5,
-            'position': {'x': 0, 'y': 0, 'z': 0},
-            'rotation': {'x': 0, 'y': 0, 'z': 0},
-            'specs': {
-                'screenSize': '6.7 吋 AMOLED',
-                'processor': '高通驍龍 8 Gen 1',
-                'camera': '108MP + 48MP + 12MP',
-                'battery': '5000mAh',
-                'storage': '256GB'
-            }
-        },
-        'phone2': {
-            'name': '輕薄 Y2',
-            'modelPath': 'models/CHT baby color.glb',
-            'scale': 1.5,
-            'position': {'x': 0, 'y': 0, 'z': 0},
-            'rotation': {'x': 0, 'y': 0, 'z': 0},
-            'specs': {
-                'screenSize': '6.1 吋 OLED',
-                'processor': '高通驍龍 778G',
-                'camera': '64MP + 12MP',
-                'battery': '4500mAh',
-                'storage': '128GB'
-            }
-        },
-        'phone3': {
-            'name': '超能 Z5',
-            'modelPath': 'models/phone3.glb',
-            'scale': 1.5,
-            'position': {'x': 0, 'y': 0, 'z': 0},
-            'rotation': {'x': 0, 'y': 0, 'z': 0},
-            'specs': {
-                'screenSize': '6.9 吋 Dynamic AMOLED',
-                'processor': 'Apple A16',
-                'camera': '50MP + 50MP + 12MP + 8MP',
-                'battery': '4800mAh',
-                'storage': '512GB'
-            }
-        }
-    }
-    
+    phones_data = load_phones_data()
     if phone_id in phones_data:
         return jsonify(phones_data[phone_id])
     else:
