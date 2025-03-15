@@ -1,44 +1,47 @@
 {
     "phone1": {
-        "name": "旗艦 X1 Pro",
-        "modelPath": "models/CHT_baby.glb",
+        "name": "iPhone 16 Pro Max",
+        "modelPath": "models/iphone_16_pro_max.glb",
         "scale": 1.5,
         "position": {"x": 0, "y": 0, "z": 0},
         "rotation": {"x": 0, "y": 0, "z": 0},
         "specs": {
-            "screenSize": "6.7 吋 AMOLED",
-            "processor": "高通驍龍 8 Gen 1",
-            "camera": "108MP + 48MP + 12MP",
-            "battery": "5000mAh",
-            "storage": "256GB"
+            "screenSize": "6.9 吋 Super Retina XDR",
+            "processor": "A18 Pro",
+            "camera": "主鏡頭 48MP + 超廣角 48MP + 長焦 12MP",
+            "battery": "4852mAh",
+            "storage": "256GB/512GB/1TB",
+            "dimensions": "163 x 77.6 x 8.3 mm",
+            "weight": "227g",
+            "features": "Face ID, Action Button, 觸控式相機控制鍵"
         }
     },
     "phone2": {
-        "name": "輕薄 Y2",
-        "modelPath": "models/CHT_baby_color.glb",
-        "scale": 1.5,
-        "position": {"x": 0, "y": 0, "z": 0},
+        "name": "Samsung Galaxy S25 Ultra",
+        "modelPath": "models/samsung_galaxy_s22_ultra.glb",
+        "scale": 0.5,
+        "position": {"x": 0, "y": -1.5, "z": 0},
         "rotation": {"x": 0, "y": 0, "z": 0},
         "specs": {
-            "screenSize": "6.1 吋 OLED",
-            "processor": "高通驍龍 778G",
-            "camera": "64MP + 12MP",
-            "battery": "4500mAh",
-            "storage": "128GB"
+            "screenSize": "6.86 吋 QHD+ AMOLED",
+            "processor": "Snapdragon 8 Elite",
+            "camera": "200MP + 50MP + 10MP + 50MP",
+            "battery": "5000mAh",
+            "storage": "1TB"
         }
     },
     "phone3": {
-        "name": "超能 Z5",
-        "modelPath": "models/phone3.glb",
-        "scale": 1.5,
+        "name": "Samsung Galaxy Z Flip 3",
+        "modelPath": "models/Samsung_Galaxy_Z_Flip_3.glb",
+        "scale": 3,
         "position": {"x": 0, "y": 0, "z": 0},
         "rotation": {"x": 0, "y": 0, "z": 0},
         "specs": {
-            "screenSize": "6.9 吋 Dynamic AMOLED",
-            "processor": "Apple A16",
-            "camera": "50MP + 50MP + 12MP + 8MP",
-            "battery": "4800mAh",
-            "storage": "512GB"
+            "screenSize": "6.7 吋 Dynamic AMOLED 2X",
+            "processor": "Snapdragon 888",
+            "camera": "12MP + 12MP 廣角",
+            "battery": "3300mAh",
+            "storage": "128GB/256GB"
         }
     }
 }
