@@ -3,6 +3,7 @@ let scene, camera, renderer, controls;
 let phoneModel;
 let lightContainer; // 新增一個光源容器
 let currentPhone = 'phone1';
+let phoneData = {}; // 初始化空的物件，將從 API 載入資料
 
 // 動畫控制變數
 let isRotatingLeft = false;
@@ -16,54 +17,18 @@ let zoomSpeed = 0.05;     // 縮放速度
 let isAutoRotating = false;
 let autoRotationSpeed = 0.005; // 自動旋轉的速度，比手動慢一些
 
-// 手機資料
-const phoneData = {
-    phone1: {
-        name: '旗艦 X1 Pro',
-        modelPath: 'models/CHT baby.glb',
-        scale: 1.5,
-        position: { x: 0, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        specs: {
-            screenSize: '6.7 吋 AMOLED',
-            processor: '高通驍龍 8 Gen 1',
-            camera: '108MP + 48MP + 12MP',
-            battery: '5000mAh',
-            storage: '256GB'
-        }
-    },
-    phone2: {
-        name: '輕薄 Y2',
-        modelPath: 'models/CHT baby color.glb',
-        scale: 1.5,
-        position: { x: 0, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        specs: {
-            screenSize: '6.1 吋 OLED',
-            processor: '高通驍龍 778G',
-            camera: '64MP + 12MP',
-            battery: '4500mAh',
-            storage: '128GB'
-        }
-    },
-    phone3: {
-        name: '超能 Z5',
-        modelPath: 'models/phone3.glb',
-        scale: 1.5,
-        position: { x: 0, y: 0, z: 0 },
-        rotation: { x: 0, y: 0, z: 0 },
-        specs: {
-            screenSize: '6.9 吋 Dynamic AMOLED',
-            processor: 'Apple A16',
-            camera: '50MP + 50MP + 12MP + 8MP',
-            battery: '4800mAh',
-            storage: '512GB'
-        }
-    }
-};
-
 // 初始化函式
-function init() {
+async function init() {
+    // 先從 API 載入手機資料
+    try {
+        await fetchPhoneData();
+    } catch (error) {
+        console.error('無法從 API 載入手機資料:', error);
+        // 發生錯誤時顯示錯誤訊息
+        showErrorMessage('無法載入手機資料，請重新整理頁面或稍後再試。');
+        return;
+    }
+    
     // 建立場景
     scene = new THREE.Scene();
     scene.background = new THREE.Color(0xf8f9fa);
@@ -156,6 +121,82 @@ function init() {
     
     // 初始運行動畫
     animate();
+}
+
+// 從 API 載入手機資料
+async function fetchPhoneData() {
+    try {
+        const response = await fetch('/api/phones');
+        if (!response.ok) {
+            throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
+        }
+        phoneData = await response.json();
+        console.log('成功從 API 載入手機資料:', phoneData);
+        return phoneData;
+    } catch (error) {
+        console.error('載入手機資料時發生錯誤:', error);
+        throw error;
+    }
+}
+
+// 從 API 載入特定手機資料
+async function fetchPhoneById(phoneId) {
+    try {
+        const response = await fetch(`/api/phones/${phoneId}`);
+        if (!response.ok) {
+            throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
+        }
+        const data = await response.json();
+        phoneData[phoneId] = data;
+        console.log(`成功從 API 載入 ${phoneId} 資料:`, data);
+        return data;
+    } catch (error) {
+        console.error(`載入 ${phoneId} 資料時發生錯誤:`, error);
+        throw error;
+    }
+}
+
+// 顯示錯誤訊息
+function showErrorMessage(message) {
+    // 建立一個錯誤訊息元素
+    const errorDiv = document.createElement('div');
+    errorDiv.classList.add('error-message');
+    errorDiv.style.backgroundColor = 'rgba(255, 0, 0, 0.8)';
+    errorDiv.style.color = 'white';
+    errorDiv.style.padding = '15px';
+    errorDiv.style.position = 'fixed';
+    errorDiv.style.top = '10px';
+    errorDiv.style.left = '50%';
+    errorDiv.style.transform = 'translateX(-50%)';
+    errorDiv.style.borderRadius = '5px';
+    errorDiv.style.zIndex = '1000';
+    errorDiv.style.textAlign = 'center';
+    errorDiv.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
+    
+    errorDiv.textContent = message;
+    
+    // 添加關閉按鈕
+    const closeButton = document.createElement('button');
+    closeButton.textContent = '×';
+    closeButton.style.marginLeft = '10px';
+    closeButton.style.backgroundColor = 'transparent';
+    closeButton.style.border = 'none';
+    closeButton.style.color = 'white';
+    closeButton.style.fontSize = '20px';
+    closeButton.style.cursor = 'pointer';
+    closeButton.addEventListener('click', () => {
+        document.body.removeChild(errorDiv);
+    });
+    
+    errorDiv.appendChild(closeButton);
+    document.body.appendChild(errorDiv);
+    
+    // 5秒後自動消失
+    setTimeout(() => {
+        if (document.body.contains(errorDiv)) {
+            document.body.removeChild(errorDiv);
+        }
+    }, 5000);
 }
 
 // 添加光源
@@ -275,11 +316,19 @@ function createPlaceholderPhone() {
 }
 
 // 更改手機模型
-function changePhone(phoneId) {
-    if (phoneData[phoneId]) {
+async function changePhone(phoneId) {
+    try {
+        // 如果還沒有這個手機的資料，從 API 載入
+        if (!phoneData[phoneId]) {
+            await fetchPhoneById(phoneId);
+        }
+        
         currentPhone = phoneId;
         loadPhoneModel(phoneData[phoneId].modelPath);
         updatePhoneInfo(phoneId);
+    } catch (error) {
+        console.error(`更改手機模型時發生錯誤: ${error}`);
+        showErrorMessage(`無法載入 ${phoneId} 的資料，請稍後再試。`);
     }
 }
 
