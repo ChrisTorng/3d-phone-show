@@ -108,12 +108,24 @@ function init() {
 
 // 添加光源
 function addLights() {
-    ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    // 增加環境光的強度
+    ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
     
-    directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    // 增加主要方向光的強度
+    directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
     directionalLight.position.set(0, 10, 10);
     scene.add(directionalLight);
+    
+    // 添加第二個方向光，從另一個角度照射
+    const directionalLight2 = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight2.position.set(-10, 5, -10);
+    scene.add(directionalLight2);
+    
+    // 添加柔和的點光源，從前方照亮模型
+    const pointLight = new THREE.PointLight(0xffffff, 0.7);
+    pointLight.position.set(0, 0, 10);
+    scene.add(pointLight);
 }
 
 // 載入手機模型
@@ -123,15 +135,8 @@ function loadPhoneModel(modelPath) {
         scene.remove(phoneModel);
     }
     
-    // 使用 GLTFLoader 載入模型
     const loader = new THREE.GLTFLoader();
     
-    // 由於模型可能不存在，我們在這裡使用替代物件
-    // 實際使用時，應當替換成正確的模型路徑
-    // createPlaceholderPhone();
-    
-    // 下面的程式碼展示如何載入真實 3D 模型
-    // 請在有實際模型檔案時使用此程式碼
     loader.load(
         modelPath,
         function (gltf) {
@@ -141,6 +146,24 @@ function loadPhoneModel(modelPath) {
             phoneModel.scale.set(data.scale, data.scale, data.scale);
             phoneModel.position.set(data.position.x, data.position.y, data.position.z);
             phoneModel.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+            
+            // 確保材質可以接收光源
+            phoneModel.traverse((node) => {
+                if (node.isMesh) {
+                    node.material.needsUpdate = true;
+                    
+                    // 為材質設定更好的光照響應
+                    if (node.material) {
+                        // 提高金屬感和光澤度
+                        if (node.material.metalness !== undefined) {
+                            node.material.metalness = 0.5;
+                        }
+                        if (node.material.roughness !== undefined) {
+                            node.material.roughness = 0.2;
+                        }
+                    }
+                }
+            });
             
             scene.add(phoneModel);
         },
