@@ -131,6 +131,10 @@ footer {
     margin-top: 2rem;
 }
 
+footer a:link, footer a:visited {
+    color: #fff;
+}
+
 /* 響應式設計 */
 @media (max-width: 768px) {
     main {
