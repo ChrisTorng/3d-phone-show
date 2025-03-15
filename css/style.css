@@ -95,6 +95,12 @@ main {
     background-color: #2980b9;
 }
 
+/* 自由展示按鈕啟用狀態樣式 */
+#controls button#auto-rotate.active {
+    background-color: #27ae60;
+    box-shadow: 0 0 8px rgba(39, 174, 96, 0.6);
+}
+
 /* 手機資訊區 */
 #phone-info {
     background-color: #fff;

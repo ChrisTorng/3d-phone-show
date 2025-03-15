@@ -4,6 +4,18 @@ let phoneModel;
 let lightContainer; // 新增一個光源容器
 let currentPhone = 'phone1';
 
+// 動畫控制變數
+let isRotatingLeft = false;
+let isRotatingRight = false;
+let isZoomingIn = false;
+let isZoomingOut = false;
+let rotationSpeed = 0.02; // 旋轉速度
+let zoomSpeed = 0.05;     // 縮放速度
+
+// 自由展示控制變數
+let isAutoRotating = false;
+let autoRotationSpeed = 0.005; // 自動旋轉的速度，比手動慢一些
+
 // 手機資料
 const phoneData = {
     phone1: {
@@ -83,11 +95,39 @@ function init() {
     // 添加窗口調整大小事件
     window.addEventListener('resize', onWindowResize, false);
     
-    // 添加控制按鈕事件
-    document.getElementById('rotate-left').addEventListener('click', rotateModelLeft);
-    document.getElementById('rotate-right').addEventListener('click', rotateModelRight);
-    document.getElementById('zoom-in').addEventListener('click', zoomIn);
-    document.getElementById('zoom-out').addEventListener('click', zoomOut);
+    // 添加控制按鈕事件 - 使用 mousedown、mouseup 和 mouseleave 事件
+    const rotateLeftBtn = document.getElementById('rotate-left');
+    const rotateRightBtn = document.getElementById('rotate-right');
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomOutBtn = document.getElementById('zoom-out');
+    
+    // 左旋轉按鈕事件
+    rotateLeftBtn.addEventListener('mousedown', () => { isRotatingLeft = true; });
+    rotateLeftBtn.addEventListener('mouseup', () => { isRotatingLeft = false; });
+    rotateLeftBtn.addEventListener('mouseleave', () => { isRotatingLeft = false; });
+    rotateLeftBtn.addEventListener('touchstart', () => { isRotatingLeft = true; });
+    rotateLeftBtn.addEventListener('touchend', () => { isRotatingLeft = false; });
+    
+    // 右旋轉按鈕事件
+    rotateRightBtn.addEventListener('mousedown', () => { isRotatingRight = true; });
+    rotateRightBtn.addEventListener('mouseup', () => { isRotatingRight = false; });
+    rotateRightBtn.addEventListener('mouseleave', () => { isRotatingRight = false; });
+    rotateRightBtn.addEventListener('touchstart', () => { isRotatingRight = true; });
+    rotateRightBtn.addEventListener('touchend', () => { isRotatingRight = false; });
+    
+    // 放大按鈕事件
+    zoomInBtn.addEventListener('mousedown', () => { isZoomingIn = true; });
+    zoomInBtn.addEventListener('mouseup', () => { isZoomingIn = false; });
+    zoomInBtn.addEventListener('mouseleave', () => { isZoomingIn = false; });
+    zoomInBtn.addEventListener('touchstart', () => { isZoomingIn = true; });
+    zoomInBtn.addEventListener('touchend', () => { isZoomingIn = false; });
+    
+    // 縮小按鈕事件
+    zoomOutBtn.addEventListener('mousedown', () => { isZoomingOut = true; });
+    zoomOutBtn.addEventListener('mouseup', () => { isZoomingOut = false; });
+    zoomOutBtn.addEventListener('mouseleave', () => { isZoomingOut = false; });
+    zoomOutBtn.addEventListener('touchstart', () => { isZoomingOut = true; });
+    zoomOutBtn.addEventListener('touchend', () => { isZoomingOut = false; });
     
     // 添加導航菜單事件
     const navLinks = document.querySelectorAll('nav ul li a');
@@ -101,6 +141,17 @@ function init() {
             navLinks.forEach(navLink => navLink.classList.remove('active'));
             this.classList.add('active');
         });
+    });
+    
+    // 添加自由展示按鈕事件
+    const autoRotateBtn = document.getElementById('auto-rotate');
+    if (autoRotateBtn) {
+        autoRotateBtn.addEventListener('click', toggleAutoRotation);
+    }
+    
+    // 添加控制器互動事件 - 當使用者開始拖動控制器時停止自動旋轉
+    controls.addEventListener('start', () => {
+        stopAutoRotation();
     });
     
     // 初始運行動畫
@@ -171,6 +222,9 @@ function loadPhoneModel(modelPath) {
             });
             
             scene.add(phoneModel);
+            
+            // 模型載入後啟動自由展示
+            startAutoRotation();
         },
         undefined,
         function (error) {
@@ -215,6 +269,9 @@ function createPlaceholderPhone() {
     phoneModel.add(screenMesh);
     
     scene.add(phoneModel);
+    
+    // 替代模型載入後也啟動自由展示
+    startAutoRotation();
 }
 
 // 更改手機模型
@@ -223,6 +280,33 @@ function changePhone(phoneId) {
         currentPhone = phoneId;
         loadPhoneModel(phoneData[phoneId].modelPath);
         updatePhoneInfo(phoneId);
+    }
+}
+
+// 自由展示控制函式
+function startAutoRotation() {
+    isAutoRotating = true;
+    updateAutoRotationButtonState();
+}
+
+function stopAutoRotation() {
+    isAutoRotating = false;
+    updateAutoRotationButtonState();
+}
+
+function toggleAutoRotation() {
+    isAutoRotating = !isAutoRotating;
+    updateAutoRotationButtonState();
+}
+
+function updateAutoRotationButtonState() {
+    const autoRotateBtn = document.getElementById('auto-rotate');
+    if (autoRotateBtn) {
+        if (isAutoRotating) {
+            autoRotateBtn.classList.add('active');
+        } else {
+            autoRotateBtn.classList.remove('active');
+        }
     }
 }
 
@@ -241,26 +325,30 @@ function updatePhoneInfo(phoneId) {
 // 旋轉模型
 function rotateModelLeft() {
     if (phoneModel) {
-        phoneModel.rotation.y -= Math.PI / 6;
+        isAutoRotating = false;
+        phoneModel.rotation.y -= rotationSpeed;
     }
 }
 
 function rotateModelRight() {
     if (phoneModel) {
-        phoneModel.rotation.y += Math.PI / 6;
+        isAutoRotating = false;
+        phoneModel.rotation.y += rotationSpeed;
     }
 }
 
 // 縮放
 function zoomIn() {
-    if (camera.position.z > 2) {
-        camera.position.z -= 0.5;
+    if (camera.position.z > 1) {
+        isAutoRotating = false;
+        camera.position.z -= zoomSpeed;
     }
 }
 
 function zoomOut() {
     if (camera.position.z < 10) {
-        camera.position.z += 0.5;
+        isAutoRotating = false;
+        camera.position.z += zoomSpeed;
     }
 }
 
@@ -275,6 +363,27 @@ function onWindowResize() {
 // 動畫迴圈
 function animate() {
     requestAnimationFrame(animate);
+    
+    // 處理持續旋轉
+    if (isRotatingLeft) {
+        rotateModelLeft();
+    }
+    if (isRotatingRight) {
+        rotateModelRight();
+    }
+    
+    // 處理持續縮放
+    if (isZoomingIn) {
+        zoomIn();
+    }
+    if (isZoomingOut) {
+        zoomOut();
+    }
+    
+    // 處理自動旋轉
+    if (isAutoRotating && phoneModel) {
+        phoneModel.rotation.y += autoRotationSpeed;
+    }
     
     // 更新光源容器位置，使其跟隨相機
     if (lightContainer) {
