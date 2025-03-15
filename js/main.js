@@ -325,14 +325,14 @@ function updatePhoneInfo(phoneId) {
 // 旋轉模型
 function rotateModelLeft() {
     if (phoneModel) {
-        isAutoRotating = false;
+        stopAutoRotation();
         phoneModel.rotation.y -= rotationSpeed;
     }
 }
 
 function rotateModelRight() {
     if (phoneModel) {
-        isAutoRotating = false;
+        stopAutoRotation();
         phoneModel.rotation.y += rotationSpeed;
     }
 }
@@ -340,14 +340,14 @@ function rotateModelRight() {
 // 縮放
 function zoomIn() {
     if (camera.position.z > 1) {
-        isAutoRotating = false;
+        stopAutoRotation();
         camera.position.z -= zoomSpeed;
     }
 }
 
 function zoomOut() {
     if (camera.position.z < 10) {
-        isAutoRotating = false;
+        stopAutoRotation();
         camera.position.z += zoomSpeed;
     }
 }
