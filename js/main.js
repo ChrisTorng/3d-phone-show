@@ -1,3 +1,8 @@
+/**
+ * 3D 手機展示主控模組
+ * 負責使用者介面控制、資料管理及場景整合
+ */
+
 // 全域變數
 let currentPhone = '';
 let phoneData = {}; // 初始化空的物件，將從 API 載入資料
@@ -9,7 +14,11 @@ let isZoomingIn = false;
 let isZoomingOut = false;
 let isAutoRotating = false;
 
-// 初始化函式
+/**
+ * 初始化應用程式
+ * @async
+ * @throws {Error} 當資料載入失敗時
+ */
 async function init() {
     try {
         await fetchPhoneData();
@@ -80,7 +89,12 @@ function setupControlButtons() {
     }
 }
 
-// 設定按鈕控制
+/**
+ * 設定使用者控制介面
+ * @param {HTMLElement} button - 控制按鈕元素
+ * @param {Function} startCallback - 開始控制回呼
+ * @param {Function} stopCallback - 停止控制回呼
+ */
 function setupButtonControl(button, startCallback, stopCallback) {
     if (!button) return;
     

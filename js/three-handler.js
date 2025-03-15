@@ -6,6 +6,11 @@ let autoRotationSpeed = 0.005;
 let rotationSpeed = 0.02;
 let zoomSpeed = 0.05;
 
+/**
+ * Three.js 場景處理模組
+ * 負責 3D 渲染、模型載入及場景控制
+ */
+
 // 初始化 3D 場景
 function initThreeScene(container) {
     scene = new THREE.Scene();
@@ -48,57 +53,75 @@ function addLights() {
     lightContainer.add(pointLight);
 }
 
-// 載入手機模型
-function loadPhoneModel(modelPath, modelData) {
+// 移除目前的手機模型
+function removeCurrentModel() {
     if (phoneModel) {
         scene.remove(phoneModel);
+        phoneModel = null;
     }
-    
-    const loader = new THREE.GLTFLoader();
-    
+}
+
+/**
+ * 載入手機 3D 模型
+ * @param {string} modelPath - 模型檔案路徑
+ * @param {Object} modelData - 模型相關資料
+ * @returns {Promise<void>}
+ * @throws {Error} 當模型載入失敗時
+ */
+function loadPhoneModel(modelPath, modelData) {
     return new Promise((resolve, reject) => {
-        loader.load(
-            modelPath,
-            function (gltf) {
-                phoneModel = gltf.scene;
-                
-                phoneModel.scale.set(modelData.scale, modelData.scale, modelData.scale);
-                phoneModel.position.set(
-                    modelData.position.x, 
-                    modelData.position.y, 
-                    modelData.position.z
-                );
-                phoneModel.rotation.set(
-                    modelData.rotation.x, 
-                    modelData.rotation.y, 
-                    modelData.rotation.z
-                );
-                
-                phoneModel.traverse((node) => {
-                    if (node.isMesh) {
-                        node.material.needsUpdate = true;
-                        if (node.material) {
-                            if (node.material.metalness !== undefined) {
-                                node.material.metalness = 0.5;
-                            }
-                            if (node.material.roughness !== undefined) {
-                                node.material.roughness = 0.2;
+        try {
+            removeCurrentModel();  // 在載入新模型前移除舊模型
+            const loader = new THREE.GLTFLoader();
+            loader.load(
+                modelPath,
+                (gltf) => {
+                    phoneModel = gltf.scene;
+                    
+                    phoneModel.scale.set(modelData.scale, modelData.scale, modelData.scale);
+                    phoneModel.position.set(
+                        modelData.position.x, 
+                        modelData.position.y, 
+                        modelData.position.z
+                    );
+                    phoneModel.rotation.set(
+                        modelData.rotation.x, 
+                        modelData.rotation.y, 
+                        modelData.rotation.z
+                    );
+                    
+                    phoneModel.traverse((node) => {
+                        if (node.isMesh) {
+                            node.material.needsUpdate = true;
+                            if (node.material) {
+                                if (node.material.metalness !== undefined) {
+                                    node.material.metalness = 0.5;
+                                }
+                                if (node.material.roughness !== undefined) {
+                                    node.material.roughness = 0.2;
+                                }
                             }
                         }
-                    }
-                });
-                
-                scene.add(phoneModel);
-                resolve(phoneModel);
-            },
-            undefined,
-            reject
-        );
+                    });
+                    
+                    scene.add(phoneModel);
+                    resolve();
+                },
+                undefined,
+                (error) => {
+                    console.error('模型載入失敗:', error);
+                    reject(new Error(`無法載入模型 ${modelPath}: ${error.message}`));
+                }
+            );
+        } catch (error) {
+            reject(error);
+        }
     });
 }
 
 // 建立替代手機模型
 function createPlaceholderPhone(phoneColor = 0x000000) {
+    removeCurrentModel();  // 在建立替代模型前移除舊模型
     const phoneGeometry = new THREE.BoxGeometry(1, 2, 0.1);
     const screenGeometry = new THREE.PlaneGeometry(0.9, 1.8);
     
@@ -170,5 +193,6 @@ window.ThreeHandler = {
     zoomCamera,
     autoRotateModel,
     resizeRenderer,
-    updateScene
+    updateScene,
+    removeCurrentModel  // 將新函式加入到全域範圍
 };
