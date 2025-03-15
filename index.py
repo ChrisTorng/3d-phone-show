@@ -11,7 +11,8 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 # 讀取手機資料的函式
 def load_phones_data():
     try:
-        with open(os.path.join(APP_ROOT, 'data', 'phones.json'), 'r', encoding='utf-8') as f:
+        data_path = app.config.get('DATA_PATH', os.path.join(APP_ROOT, 'data', 'phones.json'))
+        with open(data_path, 'r', encoding='utf-8') as f:
             return json.load(f)
     except Exception as e:
         print(f'讀取手機資料錯誤: {str(e)}')
