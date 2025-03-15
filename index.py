@@ -1,4 +1,5 @@
 from flask import Flask, send_from_directory, jsonify
+from werkzeug.security import safe_join
 import os
 
 app = Flask(__name__)
@@ -24,7 +25,14 @@ def send_js(path):
 # 3D 模型檔案路由
 @app.route('/models/<path:path>')
 def send_model(path):
-    return send_from_directory('models', path)
+    try:
+        # 使用 safe_join 確保安全的路徑處理
+        safe_path = safe_join(APP_ROOT, 'models', path)
+        if not safe_path or not os.path.exists(safe_path):
+            return jsonify({'error': '找不到指定模型'}), 404
+        return send_from_directory('models', path)
+    except Exception as e:
+        return jsonify({'error': f'無法存取模型: {str(e)}'}), 500
 
 # API 路由：獲取所有手機資料
 @app.route('/api/phones', methods=['GET'])
@@ -153,5 +161,16 @@ def get_models():
     except Exception as e:
         return jsonify({'error': f'無法獲取模型清單: {str(e)}'}), 500
 
+# 新增錯誤處理機制
+@app.errorhandler(Exception)
+def handle_error(e):
+    return jsonify({'error': str(e)}), 500
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    try:
+        app.run(host='0.0.0.0', port=5000, debug=True)
+    except OSError as e:
+        print(f'伺服器啟動錯誤: {e}')
+        # 確保正確清理資源
+        import sys
+        sys.exit(1)
