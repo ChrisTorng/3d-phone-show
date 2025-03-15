@@ -5,29 +5,50 @@
     box-sizing: border-box;
 }
 
+:root {
+    --primary-color: #2c3e50;
+    --accent-color: #3498db;
+    --gradient-start: #2980b9;
+    --gradient-end: #3498db;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
     line-height: 1.6;
     color: #333;
-    background-color: #f4f4f4;
+    background: linear-gradient(135deg, #1a2a3d 0%, #2c3e50 100%);
+    min-height: 100vh;
 }
 
 /* 標頭樣式 */
 header {
-    background-color: #2c3e50;
+    background: rgba(44, 62, 80, 0.95);
+    backdrop-filter: blur(10px);
     color: #fff;
-    padding: 1rem 0;
-    text-align: center;
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
     margin-bottom: 1rem;
+    font-size: 2.5rem;
+    background: linear-gradient(to right, #3498db, #2ecc71);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 nav ul {
     display: flex;
     justify-content: center;
     list-style: none;
+    gap: 1rem;
 }
 
 nav ul li {
@@ -37,119 +58,214 @@ nav ul li {
 nav ul li a {
     color: #fff;
     text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
+    padding: 0.7rem 1.5rem;
+    border-radius: 8px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s ease;
 }
 
 nav ul li a:hover, nav ul li a.active {
-    background-color: #3498db;
+    background: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
 }
 
 /* 主要內容區域 */
 main {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 0 2rem;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1.2fr 0.8fr;
     gap: 2rem;
+    /* 移除可能影響 Three.js 的 perspective */
 }
 
 /* 3D 手機顯示區 */
 #phone-viewer {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1.5rem;
+    height: 600px;
     display: flex;
     flex-direction: column;
-    height: 500px;
+    /* 移除可能影響 Three.js 的 3D 轉換 */
 }
 
 #canvas-container {
     flex-grow: 1;
     width: 100%;
-    background-color: #f8f9fa;
-    border-radius: 4px;
+    background: rgba(248, 249, 250, 0.05);
+    border-radius: 12px;
+    box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.2);
+    position: relative;
+    /* 移除 overflow: hidden 以防止 canvas 被裁切 */
 }
+
+/* 移除可能遮擋畫布的偽元素 */
+/* #canvas-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(52, 152, 219, 0.1), rgba(46, 204, 113, 0.1));
+    pointer-events: none;
+} */
 
 #controls {
     display: flex;
     justify-content: center;
-    margin-top: 1rem;
-    gap: 0.5rem;
+    margin-top: 1.5rem;
+    gap: 1rem;
 }
 
 #controls button {
-    padding: 0.5rem 1rem;
-    background-color: #3498db;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
 #controls button:hover {
-    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
 }
 
 /* 自由展示按鈕啟用狀態樣式 */
 #controls button#auto-rotate.active {
-    background-color: #27ae60;
-    box-shadow: 0 0 8px rgba(39, 174, 96, 0.6);
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    box-shadow: 0 0 20px rgba(39, 174, 96, 0.6);
 }
 
 /* 手機資訊區 */
 #phone-info {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2rem;
+    color: #fff;
 }
 
 #phone-name {
-    font-size: 1.8rem;
-    margin-bottom: 1.5rem;
-    color: #2c3e50;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 0.5rem;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    color: #fff;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.8rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 #phone-specs p {
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
     font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    transition: transform 0.3s ease;
+}
+
+#phone-specs p:hover {
+    transform: translateX(10px);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#phone-specs strong {
+    color: var(--accent-color);
 }
 
 /* 頁尾樣式 */
 footer {
     text-align: center;
-    padding: 1.5rem 0;
-    background-color: #2c3e50;
+    padding: 2rem 0;
+    background: rgba(44, 62, 80, 0.95);
+    backdrop-filter: blur(10px);
     color: #fff;
     margin-top: 2rem;
 }
 
-footer a:link, footer a:visited {
-    color: #fff;
+footer a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: #2ecc71;
+}
+
+/* 3D 動畫效果 */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(10px); }
+    100% { transform: translateY(0); }
+}
+
+/* 為 canvas 添加特定樣式，確保它正確顯示 */
+#canvas-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
 }
 
 /* 響應式設計 */
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
     main {
         grid-template-columns: 1fr;
+        padding: 0 1rem;
+    }
+    
+    #phone-viewer {
+        height: 500px;
+    }
+}
+
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    nav ul li {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    nav ul li a {
+        display: block;
+        text-align: center;
     }
     
     #phone-viewer {
         height: 400px;
     }
     
-    nav ul {
-        flex-direction: column;
+    #controls {
+        flex-wrap: wrap;
     }
     
-    nav ul li {
-        margin: 0.5rem 0;
+    #controls button {
+        flex: 1 1 calc(50% - 0.5rem);
+        min-width: 120px;
     }
 }

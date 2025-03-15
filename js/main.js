@@ -291,9 +291,17 @@ function animate() {
     requestAnimationFrame(animate);
     
     if (isRotatingLeft) {
+        // 在縮放時停止自動旋轉
+        if (isAutoRotating) {
+            stopAutoRotation();
+        }
         ThreeHandler.rotateModel(-1);
     }
     if (isRotatingRight) {
+        // 在縮放時停止自動旋轉
+        if (isAutoRotating) {
+            stopAutoRotation();
+        }
         ThreeHandler.rotateModel(1);
     }
     
