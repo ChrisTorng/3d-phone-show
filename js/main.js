@@ -17,7 +17,7 @@ import {
 
 // 全域變數
 let currentPhone = '';
-let phoneData = {}; // 初始化空的物件，將從 API 載入資料
+let phoneData = {}; // 初始化空的物件，將從靜態 JSON 載入資料
 
 // 控制變數
 let isRotatingLeft = false;
@@ -47,7 +47,7 @@ async function init() {
             await changePhone(firstPhoneId);
         }
     } catch (error) {
-        console.error('無法從 API 載入手機資料:', error);
+        console.error('無法從靜態 JSON 載入手機資料:', error);
         showErrorMessage('無法載入手機資料，請重新整理頁面或稍後再試。');
         return;
     }
@@ -150,15 +150,15 @@ function setupNavigationMenu() {
     });
 }
 
-// 從 API 載入手機資料
+// 從靜態 JSON 載入手機資料
 async function fetchPhoneData() {
     try {
-        const response = await fetch('/api/phones');
+        const response = await fetch('./data/phones.json');
         if (!response.ok) {
             throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
         }
         phoneData = await response.json();
-        console.log('成功從 API 載入手機資料:', phoneData);
+        console.log('成功從靜態 JSON 載入手機資料:', phoneData);
         return phoneData;
     } catch (error) {
         console.error('載入手機資料時發生錯誤:', error);
@@ -166,21 +166,12 @@ async function fetchPhoneData() {
     }
 }
 
-// 從 API 載入特定手機資料
+// 從靜態 JSON 載入特定手機資料
 async function fetchPhoneById(phoneId) {
-    try {
-        const response = await fetch(`/api/phones/${phoneId}`);
-        if (!response.ok) {
-            throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
-        }
-        const data = await response.json();
-        phoneData[phoneId] = data;
-        console.log(`成功從 API 載入 ${phoneId} 資料:`, data);
-        return data;
-    } catch (error) {
-        console.error(`載入 ${phoneId} 資料時發生錯誤:`, error);
-        throw error;
-    }
+    if (!Object.keys(phoneData).length) await fetchPhoneData();
+    const data = phoneData[phoneId];
+    if (!data) throw new Error(`找不到手機資料：${phoneId}`);
+    return data;
 }
 
 // 顯示錯誤訊息

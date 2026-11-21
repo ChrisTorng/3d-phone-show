@@ -4,7 +4,7 @@
 
 ## 線上展示
 
-您可以在這裡查看線上展示：[3D 手機展示平台](https://3d-phone-show.vercel.app/)
+您可以在這裡查看線上展示：[3D 手機展示平台](https://christorng.idv.tw/3d-phone-show/)
 
 ## 功能
 
@@ -34,7 +34,7 @@
 - Pytest (Python 測試框架)
 
 ### 部署
-- Vercel
+- GitHub Pages 靜態部署，手機資訊直接讀取 `data/phones.json`；無需 Flask API。`index.py` 僅保留作為舊有本機服務端參考。
 
 ## 使用方式
 

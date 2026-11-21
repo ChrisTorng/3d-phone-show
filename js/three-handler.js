@@ -1,3 +1,7 @@
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
 // 3D 場景相關變數
 let scene, camera, renderer, controls;
 let phoneModel;
@@ -23,7 +27,7 @@ function initThreeScene(container) {
     renderer.setSize(container.clientWidth, container.clientHeight);
     container.appendChild(renderer.domElement);
     
-    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     
@@ -79,7 +83,7 @@ function loadPhoneModel(modelPath, modelData) {
     return new Promise((resolve, reject) => {
         try {
             removeCurrentModel();  // 在載入新模型前移除舊模型
-            const loader = new THREE.GLTFLoader();
+            const loader = new GLTFLoader();
             loader.load(
                 modelPath,
                 (gltf) => {
